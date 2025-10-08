@@ -13,10 +13,19 @@ class Inductor {
 		void getMaximumFrequency ();
 		~Inductor ();
 
-		Inductor (float _inductance, float _resistance, int _turnsCount) {
-			inductance = _inductance;
-			resistance = _resistance;
-			turnsCount = _turnsCount;
+		Inductor () {
+			bool isValid = false;
+			while (!isValid) {
+				cout << "Enter inductance, resistance, count of turns: ";
+				cin >> inductance >> resistance >> turnsCount;
+
+				if (inductance < 0 || resistance < 0 || turnsCount < 0) {
+					cout << "Inductor is not valid!" << endl;
+					continue;
+				}
+
+				isValid = true;
+			}
 		}
 
 	private:
@@ -81,9 +90,9 @@ Inductor::~Inductor() {
 
 int main() {
 	Inductor 
-	myInductor(0.25, 1000, 500),
-	myInductor2(0.1, 470, 200),
-	myInductor3(0.5, 1500, 1000);
+	myInductor,
+	myInductor2,
+	myInductor3;
 
 	myInductor.setReactiveResistance(0);
 	myInductor2.setReactiveResistance(1000);

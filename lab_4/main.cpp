@@ -42,6 +42,7 @@ class Inductor {
 void Inductor::setInductance(float _inductance) {
 	if (_inductance < 0) {
 		cout << "Not valid value \n";
+		return;
 	}
 	inductance = _inductance;
 }
@@ -53,6 +54,7 @@ float Inductor::findReactiveResistance(int frequency) {
 void Inductor::setReactiveResistance(int frequency) {
 	if (frequency < 0) {
 		cout << "No valid value";
+		return;
 	}
 	reactiveResistance = findReactiveResistance(frequency);
 }

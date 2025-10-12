@@ -1,115 +1,147 @@
 #include <iostream>
+#include <cmath>
 #include <tuple>
+#include <vector>
 
 using namespace std;
 
-#define PI 3.14
+#define PI 3.14159
 
 class Inductor {
-	public:
-		void setInductance (float _inductance);
-		void setReactiveResistance (int frequency);
-		float getReactiveResistance ();
-		void getMaximumFrequency ();
-		~Inductor ();
+public:
+    void setInductance(float _inductance);
+    void setReactiveResistance(int frequency);
+    float getReactiveResistance();
+    void getMaximumFrequency();
+    ~Inductor();
 
-		Inductor () {
-			bool isValid = false;
-			while (!isValid) {
-				cout << "Enter inductance, resistance, count of turns: ";
-				cin >> inductance >> resistance >> turnsCount;
+    Inductor() {
+        bool isValid = false;
+        while (!isValid) {
+            cout << "Enter inductance (H), resistance (Ohm), count of turns: ";
+            cin >> inductance >> resistance >> turnsCount;
 
-				if (inductance < 0 || resistance < 0 || turnsCount < 0) {
-					cout << "Inductor is not valid!" << endl;
-					continue;
-				}
+            if (inductance < 0 || resistance < 0 || turnsCount < 0) {
+                cout << "Inductor is not valid! Please re-enter." << endl;
+                continue;
+            }
 
-				isValid = true;
-			}
-		}
+            isValid = true;
+        }
+    }
 
-	private:
-		float inductance;
-		float resistance;
-		int turnsCount;
-		float reactiveResistance;
-		float findReactiveResistance(int frequency);
-		tuple<int, float> findMultiplier (float value);
+    void printInfo() const {
+        cout << "------------------------" << endl;
+        cout << "Inductor Details:" << endl;
+        cout << "  Inductance: " << inductance << " H" << endl;
+        cout << "  Resistance: " << resistance << " Ohm" << endl;
+        cout << "  Turns count: " << turnsCount << endl;
+        cout << "------------------------" << endl;
+    }
 
+    float getResistance() const {
+        return resistance;
+    }
 
+private:
+    float inductance;
+    float resistance;
+    int turnsCount;
+    float reactiveResistance;
+    float findReactiveResistance(int frequency);
+    tuple<int, float> findMultiplier(float value);
 };
 
 void Inductor::setInductance(float _inductance) {
-	if (_inductance < 0) {
-		cout << "Not valid value \n";
-		return;
-	}
-	inductance = _inductance;
+    if (_inductance < 0) {
+        cout << "Not valid value " << endl;
+        return;
+    }
+    inductance = _inductance;
 }
 
-float Inductor::findReactiveResistance(int frequency) {	
-	return 2 * PI * frequency * inductance;
+float Inductor::findReactiveResistance(int frequency) {
+    return 2 * PI * frequency * inductance;
 }
 
 void Inductor::setReactiveResistance(int frequency) {
-	if (frequency < 0) {
-		cout << "No valid value";
-		return;
-	}
-	reactiveResistance = findReactiveResistance(frequency);
+    if (frequency < 0) {
+        cout << "No valid value";
+        return;
+    }
+    reactiveResistance = findReactiveResistance(frequency);
 }
 
-float Inductor::getReactiveResistance () {
-	return reactiveResistance;
+float Inductor::getReactiveResistance() {
+    return reactiveResistance;
 }
 
 void Inductor::getMaximumFrequency() {
-	int frequency = 0;
-	while (reactiveResistance / 1000 <= 10000) {
-		setReactiveResistance(frequency);
-		frequency += 10;
-	}
+    int maximumResistance = 1 * pow(10, 6);
+    float frequency = maximumResistance / (2 * PI * inductance);
 
-	auto [multiplier, fomattedFrequency] = findMultiplier((float)frequency);
+    auto [multiplier, fomattedFrequency] = findMultiplier(frequency);
 
-	cout << "Max. frequency: " << fomattedFrequency << " * 10^" << multiplier << endl;
+    cout << "Max. frequency for 1 MOhm reactive resistance: " << fomattedFrequency << " * 10^" << multiplier << " Hz" << endl;
 }
 
 tuple<int, float> Inductor::findMultiplier(float value) {
-	int multiplier = 0;
+    int multiplier = 0;
 
-	while (value > 10) {
-		value /= 10;
-		multiplier++;
-	}
+    if (value == 0) return {0, 0};
 
-	return {multiplier, value};
+    while (value >= 10.0) {
+        value /= 10.0;
+        multiplier++;
+    }
+    while (value < 1.0 && value > 0) {
+        value *= 10.0;
+        multiplier--;
+    }
+
+    return {multiplier, value};
 }
 
-Inductor::~Inductor() {
-	cout << "FIRE" << endl;
+Inductor::~Inductor() {}
+
+void findAndPrintByResistance(const vector<Inductor>& inductors, float targetResistance) {
+    cout << endl << ">>> Searching for inductors with resistance = " << targetResistance << " Ohm..." << endl;
+    bool found = false;
+
+    for (const Inductor& inductor : inductors) {
+        if (inductor.getResistance() == targetResistance) {
+            inductor.printInfo();
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No inductors found with resistance " << targetResistance << " Ohm." << endl;
+    }
 }
 
 int main() {
-	Inductor 
-	myInductor,
-	myInductor2,
-	myInductor3;
+    vector<Inductor> myInductors;
 
-	myInductor.setReactiveResistance(0);
-	myInductor2.setReactiveResistance(1000);
-	myInductor3.setReactiveResistance(30000);
+    cout << "Creating 3 inductor objects..." << endl;
+    for (int i = 0; i < 3; ++i) {
+        cout << endl << "Enter data for inductor #" << i + 1 << endl;
+        myInductors.push_back(Inductor());
+    }
 
-  	cout << "Inductor 1 " << myInductor.getReactiveResistance() / 1000.0 << " kOhm" << "\n";
-	cout << "Inductor 2 " << myInductor2.getReactiveResistance() / 1000.0 << " kOhm" << "\n";
-  	cout << "Inductor 3 " << myInductor3.getReactiveResistance() / 1000.0 << " kOhm" << "\n";
+    cout << endl << "--- All inductors created ---" << endl;
+    for(const auto& ind : myInductors) {
+        ind.printInfo();
+    }
 
-	myInductor.setInductance(4);
-	myInductor.setReactiveResistance(25000);
+    float resistanceToFind;
+    cout << endl << "Enter the resistance value to search for: ";
+    cin >> resistanceToFind;
 
-	cout << "Inductor 1 " << myInductor.getReactiveResistance() / 1000.0 << " kOhm" << "\n";
+    findAndPrintByResistance(myInductors, resistanceToFind);
+    
+    findAndPrintByResistance(myInductors, -99.99);
 
-	myInductor.getMaximumFrequency();
-
-  	return 0;
+    cout << endl << "Program finished." << endl;
+    return 0;
 }

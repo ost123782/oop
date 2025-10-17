@@ -1,5 +1,6 @@
 #include <iostream>
 #include <array>
+#include <memory>
 #include "inductor.h"
 
 using namespace std;

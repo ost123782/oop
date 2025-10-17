@@ -1,6 +1,7 @@
 #include <iostream>
 #include <tuple>
 #include <array>
+#include <cmath>
 #include "inductor.h"
 
 using namespace std;

@@ -3,7 +3,6 @@
 #define INDUCTOR_H
 
 #include <iostream>
-#include <tuple>
 using namespace std;
 
 class Inductor {

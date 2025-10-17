@@ -36,7 +36,7 @@ int main() {
     }
 
     float resistanceToFind;
-    cout << endl << "Enter the resistance value to search for: ";
+    cout << endl << "Enter the resistance value to search for:\t";
     cin >> resistanceToFind;
 
     findAndPrintByResistance(myInductors, resistanceToFind);

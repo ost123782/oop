@@ -3,40 +3,32 @@
 #define INDUCTOR_H
 
 #include <iostream>
+#include <vector>
+
 using namespace std;
 
-class Inductor {
-public:
-    void setInductance(float _inductance);
-    void setReactiveResistance(int frequency);
-    float getReactiveResistance();
-    void getMaximumFrequency();
-    void printInfo() const;
-    float getResistance() const;
-    ~Inductor();
-
-    Inductor() {
-        bool isValid = false;
-        while (!isValid) {
-            cout << "Enter inductance (H), resistance (Ohm), count of turns: ";
-            cin >> inductance >> resistance >> turnsCount;
-
-            if (inductance < 0 || resistance < 0 || turnsCount < 0) {
-                cout << "Inductor is not valid! Please re-enter." << endl;
-                continue;
-            }
-
-            isValid = true;
-        }
-    }
-
-private:
+struct inductorUnit {
     float inductance;
     float resistance;
     int turnsCount;
-    float reactiveResistance;
-    float findReactiveResistance(int frequency);
-    tuple<int, float> findMultiplier(float value);
+};
+
+
+class InductorsManager {
+public:
+    void printInfo();
+    void addInductor();
+    void insertInductor(int insertId);
+    void removeInductor(int inductorId);
+    void clearInductors();
+    void editInductor(int inductorId);
+    void swapInductros(int firstInductor, int secondInductor);
+    InductorsManager();
+    ~InductorsManager();
+
+private:
+    vector<inductorUnit> inductors;
+    inductorUnit createCheckedUserInductor();
 };
 
 #endif

@@ -8,67 +8,101 @@ using namespace std;
 
 #define PI 3.14159
 
-void Inductor::printInfo() const {
-    cout << "------------------------" << endl;
-    cout << "Inductor Details:" << endl;
-    cout << "  Inductance: " << inductance << " H" << endl;
-    cout << "  Resistance: " << resistance << " Ohm" << endl;
-    cout << "  Turns count: " << turnsCount << endl;
-    cout << "------------------------" << endl;
+void InductorsManager::printInfo() {
+    for (int i = 0; i < inductors.size(); i++) {
+        cout << "Inductor #" << i+1 << 
+        " inductance " << inductors[i].inductance 
+        <<", resistance " << inductors[i].resistance 
+        <<", turns count " << inductors[i].turnsCount
+        << endl;
+    }
 }
 
-float Inductor::getResistance() const {
-    return resistance;
+void InductorsManager::addInductor() {
+    inductors.push_back(createCheckedUserInductor());
 }
 
-void Inductor::setInductance(float _inductance) {
-    if (_inductance < 0) {
-        cout << "Not valid value " << endl;
+void InductorsManager::editInductor(int inductorId) {
+    cout << "Editing inductor..." << endl;
+
+    if (inductorId < 0 || inductorId >= inductors.size()) {
+        cout << "Inductor's id can't be lower then 0 and inductor need to be created!" << endl;
         return;
     }
-    inductance = _inductance;
+
+    inductors[inductorId] = createCheckedUserInductor();
 }
 
-float Inductor::findReactiveResistance(int frequency) {
-    return 2 * PI * frequency * inductance;
-}
-
-void Inductor::setReactiveResistance(int frequency) {
-    if (frequency < 0) {
-        cout << "No valid value";
+void InductorsManager::insertInductor(int insertId) {
+    if (insertId < 0 || insertId > inductors.size()) {
+        cout << "Insert id can't be lower then 0 and inductor need to be created!" << endl;
         return;
     }
-    reactiveResistance = findReactiveResistance(frequency);
+
+    inductors.insert(inductors.begin() + insertId, createCheckedUserInductor());
 }
 
-float Inductor::getReactiveResistance() {
-    return reactiveResistance;
-}
-
-void Inductor::getMaximumFrequency() {
-    int maximumResistance = 1 * pow(10, 6);
-    float frequency = maximumResistance / (2 * PI * inductance);
-
-    auto [multiplier, fomattedFrequency] = findMultiplier(frequency);
-
-    cout << "Max. frequency for 1 MOhm reactive resistance: " << fomattedFrequency << " * 10^" << multiplier << " Hz" << endl;
-}
-
-tuple<int, float> Inductor::findMultiplier(float value) {
-    int multiplier = 0;
-
-    if (value == 0) return {0, 0};
-
-    while (value >= 10.0) {
-        value /= 10.0;
-        multiplier++;
-    }
-    while (value < 1.0 && value > 0) {
-        value *= 10.0;
-        multiplier--;
+void InductorsManager::removeInductor(int inductorId) {
+    cout << "Removing inductor..." << endl;
+    
+    if (inductorId < 0 || inductorId >= inductors.size()) {
+        cout << "Inductor's id can't be lower then 0 and inductor need to be created!" << endl;
+        return;
     }
 
-    return {multiplier, value};
+    inductors.erase(inductors.begin() + inductorId);
 }
 
-Inductor::~Inductor() {}
+void InductorsManager::clearInductors() {
+    cout << "Clearing inductors..." << endl;
+
+    inductors.clear();
+}
+
+void InductorsManager::swapInductros (int firstInductor, int secondInductor) {
+    cout << "Swappig inductors..." << endl;
+
+    if (
+        firstInductor < 0 || firstInductor >= inductors.size() ||
+        secondInductor < 0 || secondInductor >= inductors.size()
+    ) {
+        cout << "Inductor's id can't be lower then 0 and inductor need to be created!";
+        return;
+    }
+
+    inductorUnit tempInductor = inductors[firstInductor];
+    inductors[firstInductor] = inductors[secondInductor];
+    inductors[secondInductor] = tempInductor;
+}
+
+InductorsManager::InductorsManager () {
+    cout << "This is constructor of InductorsManager" << endl;
+}
+
+InductorsManager::~InductorsManager () {
+    cout << "BOOM!" << endl;
+}
+
+inductorUnit InductorsManager::createCheckedUserInductor() {
+    inductorUnit newInductor;
+    bool isValid = false;
+
+    while (!isValid) {
+        cout << "Enter inductor's params (inductance, resistance, turns count) \t";
+        cin >> newInductor.inductance >> newInductor.resistance >> newInductor.turnsCount;
+
+        if 
+        (
+            newInductor.inductance <= 0 || 
+            newInductor.resistance <= 0 || 
+            newInductor.turnsCount <= 0
+        ) 
+        {
+            cout << "Values my be greater then 0!" << endl;
+            continue;
+        }
+        isValid = true;
+    }
+
+    return newInductor;
+}

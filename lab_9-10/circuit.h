@@ -9,11 +9,11 @@ using namespace std;
 
 class Circuit {
     public:
-        void showInfo();
+        virtual void showInfo();
         void setTransistorCount(int newCount);
         void setName(string newName);
         Circuit(int newCount, string newName);
-        ~Circuit();
+        virtual ~Circuit();
     protected:
         int transistorCount;
         string name;
